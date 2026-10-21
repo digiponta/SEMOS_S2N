@@ -1,0 +1,10 @@
+{
+  "LLM-B": {
+    "checkpoint": "vendor/LLM_SEM/model/model-gpu-v0.4.pt",
+    "tokenizer": "vendor/LLM_SEM/model/tokenizer.json"
+  },
+  "LLM-C": {
+    "checkpoint": "vendor/LLM_SEM/model/model-gpu-v0.4.pt",
+    "tokenizer": "vendor/LLM_SEM/model/tokenizer.json"
+  }
+}
