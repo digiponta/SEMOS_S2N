@@ -1,0 +1,34 @@
+[
+  {
+    "receiver": "LLM-B",
+    "operation": "teach",
+    "text": "GPUは並列計算に適している。"
+  },
+  {
+    "receiver": "LLM-C",
+    "operation": "teach",
+    "text": "GPUは機械学習に有用である。"
+  },
+  {
+    "receiver": "LLM-B",
+    "operation": "query",
+    "text": "GPUは並列計算に適している。",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "operation": "query",
+    "text": "GPUは機械学習に有用である。",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "operation": "query",
+    "text": "GPUとは異なる宇宙の現象を観測する。"
+  },
+  {
+    "receiver": "LLM-C",
+    "operation": "query",
+    "text": "猫は窓辺で眠っている。"
+  }
+]
