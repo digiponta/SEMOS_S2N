@@ -34,6 +34,16 @@ python semantic_decoder.py train --corpus data/decoder_train.txt --epochs 30 --d
 
 The program constructs source semantic vectors using `LanguageModel.encode_semantic` with the same default `pooling=hybrid`, `hybrid_alpha=0.35` and `normalized=False` used in `LLM_SEM/semantic.py`. It excludes examples longer than the source context and sentences with unknown tokens, does a seeded sentence-level holdout, trains with teacher forcing and cross-entropy, and saves the decoder with the best validation NLL.
 
+### Export a matching LLM_SEM vector
+
+Use the exact encoder and tokenizer files from training:
+
+```powershell
+python export_semantic_vector.py "量子センサーは微小な物理量を測定する。" -o semantic_vector.json
+```
+
+This generates a real 64-element JSON vector plus its encoder/tokenizer SHA-256 fingerprints. It is not decoded from text directly: it goes through the actual source model's `encode_semantic`. If source checkpoint/tokenizer files are absent, copy them from the working LLM_SEM environment first.
+
 ### Decode an actual vector
 
 Input file `semantic_vector.json`:
