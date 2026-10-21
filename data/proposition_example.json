@@ -1,0 +1,9 @@
+{
+  "source": "GPUは並列計算に適しているので、機械学習に有用である。",
+  "propositions": [
+    "GPUは並列計算に適している。",
+    "GPUは機械学習に有用である。"
+  ],
+  "relation": "explanation",
+  "model_id": "manual-demo"
+}
