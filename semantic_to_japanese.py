@@ -17,6 +17,12 @@ def convert(data):
         return "\n".join(convert(item) for item in data)
     if not isinstance(data, dict):
         raise ConversionError("expected object or array")
+    if "sd_version" in data:
+        from rsd import validate, RSDIntegrityError
+        try:
+            return validate(data)
+        except RSDIntegrityError as exc:
+            raise ConversionError(str(exc)) from exc
     if "propositions" in data:
         return convert(data["propositions"])
     if isinstance(data.get("text"), str) and data["text"].strip():
