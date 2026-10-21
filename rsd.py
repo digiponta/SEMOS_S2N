@@ -44,7 +44,8 @@ def split(sd: dict, position: int) -> tuple[dict, dict]:
         "parent_hash": sd["text_sha256"],
         "part_count": 2,
         "join_operator": "concat",
-        "total_length": len(text)
+        "total_length": len(text),
+        "parent_reconstruction": sd.get("reconstruction")
     }
     result = []
     for i, chunk in enumerate(pieces):
@@ -64,7 +65,7 @@ def merge(parts: list[dict]) -> dict:
             raise RSDIntegrityError("fragment missing reconstruction metadata")
         rows.append((sd, text, meta))
     reference = rows[0][2]
-    for field in ("parent_id", "parent_hash", "part_count", "join_operator", "total_length"):
+    for field in ("parent_id", "parent_hash", "part_count", "join_operator", "total_length", "parent_reconstruction"):
         if any(row[2].get(field) != reference.get(field) for row in rows):
             raise RSDIntegrityError(f"mismatched {field}")
     count = reference.get("part_count")
@@ -83,6 +84,11 @@ def merge(parts: list[dict]) -> dict:
     reconstructed = make_sd(full, reference["parent_id"])
     if reconstructed["text_sha256"] != reference["parent_hash"]:
         raise RSDIntegrityError("parent hash mismatch")
+    ancestor = reference.get("parent_reconstruction")
+    if ancestor is not None:
+        if not isinstance(ancestor, dict):
+            raise RSDIntegrityError("invalid ancestor reconstruction metadata")
+        reconstructed["reconstruction"] = ancestor
     return reconstructed
 
 def read(path):
