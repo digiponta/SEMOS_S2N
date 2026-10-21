@@ -46,13 +46,13 @@ def main():
     try:
         raw = sys.stdin.read() if args.input == "-" else Path(args.input).read_text(encoding="utf-8-sig")
     except FileNotFoundError:
-        print(f"input file not found: {args.input}. Try: python semantic_to_japanese.py examples/semantic.json", file=sys.stderr)
+        print(f"input file not found: {args.input}. Try: python semantic_to_japanese.py semantic.json", file=sys.stderr)
         return 2
     except OSError as e:
         print(f"input read error: {e}", file=sys.stderr)
         return 2
     try:
-        data = [json.loads(s) for s in raw.splitlines() if s.strip()] if args.jsonl else json.loads(raw)
+        data = [json.loads(line.lstrip("\ufeff")) for line in raw.splitlines() if line.strip("\ufeff \t\r\n")] if args.jsonl else json.loads(raw.lstrip("\ufeff"))
         result = convert(data)
     except (ValueError, ConversionError) as e:
         print(f"conversion error: {e}", file=sys.stderr)
