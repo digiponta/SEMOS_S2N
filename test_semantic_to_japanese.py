@@ -27,5 +27,17 @@ class TestConversion(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertEqual(completed.stdout.strip(), "GPUは、高速である。")
 
+    def test_rsd_v02_exact(self):
+        from rsd import make_sd
+        original = "  GPUは並列計算に適している。\n"
+        self.assertEqual(convert(make_sd(original)), original)
+
+    def test_rsd_v02_reject_tamper(self):
+        from rsd import make_sd
+        sd = make_sd("原文")
+        sd["payload"] = "改ざん"
+        with self.assertRaises(ConversionError):
+            convert(sd)
+
 if __name__ == "__main__":
     unittest.main()
