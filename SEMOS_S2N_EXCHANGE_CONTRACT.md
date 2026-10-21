@@ -66,3 +66,16 @@ format.
 **The other LLM can receive an intact SKI dataset A and return a schema-valid
 SKI dataset B.** What it inferred or understood from A is not tested by
 SEMOS_S2N.
+
+## Verified SKI version resolution (2026-10-21)
+
+The latest **verified** SKI draft is HASKI_DOC's **SKI v0.2**
+(`docs/SKI_v0.2_Core_Data_Model_Lifecycle_Distributed_Synchronization_ja.md`,
+2026-10-19). HA_DOC's latest commit contains a HyperAether paper rather
+than a SKI schema. The new `ski_core_v02_exchange.py` uses a **partial
+SKI v0.2 JSON-LD assertion validator**. Refer to `SKI_V02_ALIGNMENT.md`
+for required Core fields and explicit unstandardized S2N extensions.
+The legacy `ski-natural-language-v0.5` array roundtrip remains
+backward-compatible demonstration code, not the normative SKI v0.2 dataset
+representation. Formal conformance is still pending the canonical published
+context/SHACL shapes.
