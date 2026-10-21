@@ -53,15 +53,24 @@ def process_received(message, *, receiver, checkpoint, tokenizer_path, device="a
 def run_messages(messages, models, *, device="auto"):
     if not isinstance(messages, list) or len(messages) < 2 or not isinstance(models, dict):
         raise ValueError("two or more messages and model mappings required")
-    outputs, ids = [], set()
+    # Validate the complete batch before loading any expensive model weights.
+    targets = []
     for message in messages:
-        target = message.get("target_llm") if isinstance(message, dict) else None
-        if target in ids:
-            raise ValueError("duplicate receiver")
-        ids.add(target)
+        if not isinstance(message, dict):
+            raise ValueError("each message must be a JSON object")
+        target = message.get("target_llm")
+        if not isinstance(target, str) or not target:
+            raise ValueError("missing receiver ID")
+        targets.append(target)
+    if len(set(targets)) != len(targets):
+        raise ValueError("duplicate receiver")
+    for target in targets:
         spec = models.get(target)
         if not isinstance(spec, dict) or not spec.get("checkpoint") or not spec.get("tokenizer"):
-            raise ValueError("checkpoint and tokenizer required for " + str(target))
+            raise ValueError("checkpoint and tokenizer required for " + target)
+    outputs = []
+    for message, target in zip(messages, targets):
+        spec = models[target]
         sd, response = process_received(message, receiver=target,
             checkpoint=spec["checkpoint"], tokenizer_path=spec["tokenizer"], device=device)
         outputs.append({"receiver": target, "local_sd": sd, "response": response,
