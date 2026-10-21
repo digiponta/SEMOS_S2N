@@ -1,0 +1,72 @@
+[
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "GPUは並列計算に適している。",
+    "category": "exact",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "GPUは並行演算を効率よく実行できる。",
+    "category": "paraphrase",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "GPUは並列計算に適していない。",
+    "category": "contradiction",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "CPUは並列計算に適している。",
+    "category": "subject_change",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "猫は窓辺で眠っている。",
+    "category": "unrelated",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "GPUは機械学習に有用である。",
+    "category": "exact",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "機械学習にはGPUが役立つ。",
+    "category": "paraphrase",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "GPUは機械学習には役立たない。",
+    "category": "contradiction",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "CPUは機械学習に有用である。",
+    "category": "subject_change",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "海は塩分を含んでいる。",
+    "category": "unrelated",
+    "expected": "UNKNOWN"
+  }
+]
