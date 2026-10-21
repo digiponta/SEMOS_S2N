@@ -22,7 +22,7 @@ class TestConversion(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "semantic.json"
             path.write_text('{"subject":"GPU","value":"高速"}', encoding="utf-8-sig")
-            cmd = [sys.executable, str(Path(__file__).with_name("semantic_to_japanese.py")), str(path)]
+            cmd = [sys.executable, "-X", "utf8", str(Path(__file__).with_name("semantic_to_japanese.py")), str(path)]
             completed = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
             self.assertEqual(completed.returncode, 0, completed.stderr)
             self.assertEqual(completed.stdout.strip(), "GPUは、高速である。")
