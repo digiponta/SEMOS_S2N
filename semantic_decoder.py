@@ -197,6 +197,9 @@ def decode(args):
     for field, expected in [("pooling", meta["pooling"]), ("normalized", meta["normalized"]), ("hybrid_alpha", meta["hybrid_alpha"])]:
         if field in item and item[field] != expected:
             raise ValueError(f"SemanticData {field} differs from decoder training")
+    for field in ("encoder_sha256", "tokenizer_sha256"):
+        if field in item and item[field] != meta[field]:
+            raise ValueError(f"SemanticData {field} differs from decoder training")
     vector = torch.tensor(item["vector"], dtype=torch.float32, device=device)
     result = decoder.generate(vector, tokenizer, args.max_tokens)
     print(result)
