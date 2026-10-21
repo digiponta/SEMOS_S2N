@@ -14,5 +14,18 @@ class TestConversion(unittest.TestCase):
     def test_unrecognized_predicate(self):
         with self.assertRaises(ConversionError):
             convert({"subject":"A","predicate":"causes","object":"B"})
+    def test_bom_json_cli(self):
+        import subprocess
+        import sys
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "semantic.json"
+            path.write_text('{"subject":"GPU","value":"高速"}', encoding="utf-8-sig")
+            cmd = [sys.executable, str(Path(__file__).with_name("semantic_to_japanese.py")), str(path)]
+            completed = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8")
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(completed.stdout.strip(), "GPUは、高速である。")
+
 if __name__ == "__main__":
     unittest.main()
