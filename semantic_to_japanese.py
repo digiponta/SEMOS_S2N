@@ -43,7 +43,14 @@ def main():
     p.add_argument("-o", "--output")
     p.add_argument("--jsonl", action="store_true")
     args = p.parse_args()
-    raw = sys.stdin.read() if args.input == "-" else Path(args.input).read_text(encoding="utf-8")
+    try:
+        raw = sys.stdin.read() if args.input == "-" else Path(args.input).read_text(encoding="utf-8-sig")
+    except FileNotFoundError:
+        print(f"input file not found: {args.input}. Try: python semantic_to_japanese.py examples/semantic.json", file=sys.stderr)
+        return 2
+    except OSError as e:
+        print(f"input read error: {e}", file=sys.stderr)
+        return 2
     try:
         data = [json.loads(s) for s in raw.splitlines() if s.strip()] if args.jsonl else json.loads(raw)
         result = convert(data)
