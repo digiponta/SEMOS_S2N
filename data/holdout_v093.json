@@ -1,0 +1,86 @@
+[
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "GPUは並列計算に適している。",
+    "category": "exact",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "GPUは多数の計算を同時処理できる。",
+    "category": "paraphrase",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "GPUは並行演算に向いていない。",
+    "category": "negation",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "TPUは並列計算に適している。",
+    "category": "subject_change",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "量子センサーは微小な磁場を測る。",
+    "category": "unrelated",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-B",
+    "reference": "GPUは並列計算に適している。",
+    "query": "GPUは並列計算の電力効率を保証しない。",
+    "category": "lexical_overlap",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "GPUは機械学習に有用である。",
+    "category": "exact",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "GPUは学習モデルの訓練に力を発揮する。",
+    "category": "paraphrase",
+    "expected": "KNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "GPUは機械学習に有用ではない。",
+    "category": "negation",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "NPUは機械学習に有用である。",
+    "category": "subject_change",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "真空管アンプは音声信号を増幅する。",
+    "category": "unrelated",
+    "expected": "UNKNOWN"
+  },
+  {
+    "receiver": "LLM-C",
+    "reference": "GPUは機械学習に有用である。",
+    "query": "GPUは機械学習にしか使えない。",
+    "category": "lexical_overlap",
+    "expected": "UNKNOWN"
+  }
+]
