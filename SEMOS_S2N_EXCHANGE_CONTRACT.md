@@ -1,80 +1,68 @@
-# SEMOS_S2N — Scope and Exchange Contract (2026-10-21)
+# SEMOS_S2N — SKI Dataset Exchange Contract (2026-10-21)
 
-## Objective
+## Scope and authoritative format
 
-SEMOS_S2N's responsibility is to convey **Dataset A**, a collection of natural-language propositions plus associated attributes, to a recipient LLM in a verifiable, parseable format. The recipient's interpretation, reasoning, learning, and semantic agreement are **out of scope**. Its response **Dataset B must use the same dataset schema** as A. A and B may contain different propositions and attributes.
+**Dataset A and response Dataset B MUST use the SKI data format.**
+SEMOS_S2N does **not** introduce an independent `s2n-dataset-1` schema.
+The earlier `s2n-dataset-1` example is **withdrawn**.
 
-**A valid transport/response exchange is not evidence of semantic equivalence or truth.**
+A dataset comprises natural-language proposition(s) and their associated SKI
+attributes. Existing SKI definitions, including the relevant HASKI_DOC SKI
+specifications, are authoritative for field names, identity, provenance and
+dataset structure. Do not silently replace or rename SKI fields.
 
-## Dataset schema proposal: s2n-dataset-1
+Sender A -> SKI dataset A -> receiver LLM -> SKI dataset B -> sender A.
 
-```json
-{
-  "schema_version": "s2n-dataset-1",
-  "dataset_id": "ds-A-0001",
-  "sender_id": "LLM-A",
-  "recipient_id": "LLM-B",
-  "in_reply_to": null,
-  "propositions": [
-    {
-      "proposition_id": "p-A-1",
-      "text": "GPUは並列計算に適している。",
-      "attributes": {
-        "language": "ja",
-        "source_sd_id": "sd-example",
-        "provenance": "LLM-A"
-      }
-    }
-  ]
-}
-```
+## Guaranteed boundaries
 
-A response B uses the **same** `schema_version`, structure, and property types,
-with a new `dataset_id`, a `sender_id` representing the responding model,
-and `in_reply_to` identifying Dataset A. No requirement for equal text or
-equal proposition counts. Attributes are JSON-serializable metadata and are
-preserved as transmitted, with no implied truth or semantic interpretation.
+1. Serialize and validate Dataset A under the **selected SKI version**.
+2. Preserve the SKI natural-language proposition, attributes, identity and
+   provenance as specified; detect corruption and routing mismatch.
+3. Confirm receipt of the SKI dataset/message at the **protocol level**.
+4. Accept Dataset B only if it satisfies **the same selected SKI dataset
+   schema and validation rules as A**, allowing different proposition contents.
+5. Correlate Dataset B with the request through the SKI-defined correlation
+   and provenance mechanism.
+6. The receiving LLM's interpretation, reasoning, memory and output meaning
+   are entirely out of scope. A valid B need not be semantically equivalent
+   to A.
 
-## Sender guarantees
+No common embedding space, shared architecture or model compatibility is
+required. The exchange layer transports natural-language SKI data, not
+cross-model semantic vectors.
 
-1. Validate A against a shared versioned schema before encoding/transmission.
-2. Protect payload integrity (e.g., deterministic serialization plus hash).
-3. Verify receipt of the complete A bytes or an equivalent canonicalized
-   representation; a delivery acknowledgement must refer to A's ID/digest.
-4. Correlate B to A using `in_reply_to`, validate B against the same schema
-   and its integrity metadata.
-5. Reject malformed, truncated, altered, wrong-recipient or mismatched-reply
-   envelopes; report failures as protocol/transport errors, not semantic errors.
+## Existing repository implementation versus target
 
-A receipt acknowledgment establishes **protocol-level receipt** only.
-It does not prove the model processed, understood, or accepted a proposition.
-When exchange occurs over a local simulator, network delivery guarantees have
-not yet been tested.
+The checked-in `ski_nl_exchange.py` v0.5 currently defines a **single
+SKI message** tagged `ski-natural-language-v0.5` with
+`message_id`, `source_llm`, `target_llm`, `source_sd_id`,
+`parent_sd_id`, `language`, `text`, `text_sha256`, and `derivation`.
+Its current `receipt()` creates a distinct
+`ski-natural-language-v0.5-result` envelope containing `text`, NOT a
+SKI dataset B of the same format as dataset A. Therefore the current code
+**does not yet satisfy** this new A/B dataset exchange contract.
 
-## Recipient's freedom and minimal obligation
+The previously proposed `schema_version`, `dataset_id`, `propositions`,
+`attributes` wrapper was an S2N invention, **not a verified SKI format**.
+Do not assume it is compatible with SKI. A new dataset container, if needed,
+must be defined within an agreed SKI version, not as an S2N-specific wire
+format.
 
-- Free to interpret, ignore, transform, infer from, or decline to use A.
-- If it responds through S2N, its response B must conform to the shared
-  dataset schema; no mandated semantic relation to A.
-- A receiver adapter may wrap a model-native reply into Dataset B. The
-  model's internal format is not prescribed.
+## Required implementation changes
 
-## Explicitly out of scope
+- Identify and pin the authoritative SKI dataset version/schema from
+  HASKI_DOC before implementing or asserting compliance.
+- Implement Dataset A serialization/validation using the SKI schema.
+- Implement Dataset B serialization/validation using the **same SKI schema**.
+- Separate transport-level receipt ACK from application-level Dataset B.
+- Enforce SKI provenance/correlation and payload integrity.
+- Test A -> ACK -> B, including arbitrary proposition/attribute contents,
+  mismatched routing/correlation, corruption and invalid schemas.
+- Preserve earlier v0.5 and v0.7–v0.9.3 tests as legacy experiments, but
+  semantic-gate accuracy is **not** an exchange acceptance criterion.
 
-- Cosine similarity of cross-model vectors.
-- Semantic equivalence of the original and transformed propositions.
-- Known/Unknown and Truth-Aware Gate accuracy.
-- Encoder checkpoint compatibility, common vector basis, model training.
+## Definition of success
 
-Existing v0.7–v0.9.3 model-local tests remain optional experiments and
-should not serve as acceptance criteria for S2N interchange.
-
-## Next implementation acceptance tests
-
-- A round trip: valid A -> recipient acknowledgment -> schema-valid B.
-- Same structure, different A/B propositions; zero or multiple propositions.
-- Custom nested attributes preserved.
-- Missing text/IDs, malformed attribute JSON, unknown schema version rejected.
-- Tampered digest, duplicate reply ID, mismatched `in_reply_to`, wrong
-  recipient rejected.
-- Timeout and failure conditions represented as explicit protocol errors.
+**The other LLM can receive an intact SKI dataset A and return a schema-valid
+SKI dataset B.** What it inferred or understood from A is not tested by
+SEMOS_S2N.
